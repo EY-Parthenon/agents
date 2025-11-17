@@ -4,24 +4,35 @@
 
 ---
 
-# Contribution Analysis & Reporting Protocol
+# Contribution Analysis & Reporting Protocol (V2)
 
-**Version**: 1.0
-**Purpose**: Generate detailed contributor analytics and beautiful HTML reports for the uds-core repository
-**Output**: `contribution-report.html` with interactive charts and comprehensive statistics
-**Duration**: 15-30 minutes
+**Version**: 2.0
+**Purpose**: Generate detailed contributor analytics and beautiful HTML reports for the uds-core repository with enhanced time-series analysis and package install metrics
+**Output**: `contribution-report-v2.html` with interactive charts and comprehensive statistics
+**Duration**: 20-40 minutes
 
 ---
 
 ## Overview
 
 This protocol analyzes a Git repository's contribution history to provide insights into:
-- 📊 **Contributor Activity**: Who is contributing and how much
-- 📈 **Temporal Trends**: How contributions evolve over time
-- 🎯 **Impact Metrics**: Lines of code, commits, and file changes
-- 👥 **Team Dynamics**: Active contributors and their engagement patterns
+- 📊 **Contributor Activity**: Monthly commits and temporal patterns
+- 📈 **Temporal Trends**: Cumulative contributions and growth over time
+- 🎯 **Impact Metrics**: Lines of code changes by time period and contributor
+- 👥 **Team Dynamics**: Recent contributor activity and file expertise
+- 📦 **Package Adoption**: Installation metrics and growth trends
 
-**Core Principle**: **Data-driven insights into project health and contributor engagement**
+**Core Principle**: **Data-driven insights into project health, contributor engagement, and package adoption**
+
+## V2 Report Sections
+
+The V2 report includes the following enhanced sections:
+
+1. **Total Monthly Commits Over Time**: Line chart showing monthly commit activity for top 10 contributors plus "All Others" aggregated line
+2. **Cumulative Contributions**: Line chart displaying cumulative contribution growth for top 10 contributors plus "All Others" 
+3. **Lines of Code Changed by Time Period**: Stacked bar chart showing LOC changes (every 6 months historically, monthly for last 6 months) broken down by top 10 contributors plus "All Others"
+4. **Top 10 Contributors (Last 12 Months)**: Detailed table with lines added/removed and their top 5 most-committed files
+5. **Package Install Metrics**: Chart showing total installs of packages/init over time (6-month intervals) using NPM/PyPI APIs
 
 ---
 
@@ -128,32 +139,81 @@ For each contributor:
 - **Active Days**: Difference between first and last commit dates
 - **Contribution %**: (Net Lines Changed / Total Project Lines Changed) * 100
 
-#### 3.2 Identify Top Contributors
+#### 3.2 Identify Top Contributors (V2)
 
-**Rankings**:
-1. **Top 10 by Commits**: For timeline visualizations
-2. **Top 15 by Commits**: For bar chart visualization
-3. **Top 15 by Lines Changed**: For impact visualization
-4. **Top 10 for Donut Chart**: For distribution visualization
-5. **Top 20 for Detailed Table**: With full metrics
+**Rankings for V2 Report**:
+1. **Top 10 by Total Contributions**: For monthly commits and cumulative charts (plus "All Others" aggregate)
+2. **Top 10 in Last 12 Months**: For recent contributors table with file expertise
 
-#### 3.3 Generate Time-Series Data
+#### 3.3 Generate Time-Series Data (V2)
 
-**Monthly Aggregation**:
+**V2 Specific Aggregations**:
+
+**1. Monthly Commits (Top 10 + All Others)**:
 ```python
-# For each contributor and each month
-monthly_data = {
-    "2023-01": {"John Doe": 150, "Jane Smith": 230, ...},
-    "2023-02": {"John Doe": 200, "Jane Smith": 180, ...},
+# Commits per month for each contributor
+monthly_commits = {
+    "2023-01": {"John Doe": 25, "Jane Smith": 18, "All Others": 42},
+    "2023-02": {"John Doe": 32, "Jane Smith": 15, "All Others": 38},
     # ...
+}
+```
+
+**2. Cumulative Contributions**:
+```python
+# Running total of lines changed
+cumulative_data = {
+    "2023-01": {"John Doe": 1500, "Jane Smith": 2300, "All Others": 5200},
+    "2023-02": {"John Doe": 3500, "Jane Smith": 4100, "All Others": 10800},
+    # ...
+}
+```
+
+**3. LOC by Time Period (6-month intervals + monthly last 6mo)**:
+```python
+# Lines of code changed, segmented by contributor (for stacked bar)
+loc_by_period = {
+    "2020 H1": {"John Doe": 5000, "Jane Smith": 3200, "All Others": 12000},
+    "2020 H2": {"John Doe": 6200, "Jane Smith": 4100, "All Others": 15000},
+    # ...
+    "2023-06": {"John Doe": 800, "Jane Smith": 650, "All Others": 2100},  # Last 6 months: monthly
+    "2023-07": {"John Doe": 920, "Jane Smith": 710, "All Others": 2300},
+    # ...
+}
+```
+
+**4. Top Files by Contributor (Last 12 months)**:
+```python
+# For each contributor in last 12 months, track their top 5 files
+contributor_files = {
+    "John Doe": {
+        "src/main.py": 45,  # 45 commits to this file
+        "src/utils.py": 32,
+        "tests/test_main.py": 28,
+        "README.md": 15,
+        "docs/api.md": 12
+    },
+    # ...
+}
+```
+
+**5. Package Install Metrics (NPM/PyPI)**:
+```python
+# Query NPM or PyPI API for packages/init package
+# Get release history and install counts
+package_installs = {
+    "releases": [
+        {"version": "1.0.0", "date": "2020-01-15", "installs": 1250, "period": "2020 H1"},
+        {"version": "1.5.0", "date": "2020-07-20", "installs": 3420, "period": "2020 H2"},
+        # If multiple releases in same 6mo period, take highest install count
+        {"version": "2.1.0", "date": "2021-01-10", "installs": 8500, "period": "2021 H1"},
+        # ...
+    ]
 }
 
-# Cumulative over time
-cumulative_data = {
-    "2023-01": {"John Doe": 150, "Jane Smith": 230, ...},
-    "2023-02": {"John Doe": 350, "Jane Smith": 410, ...},
-    # ...
-}
+# API Examples:
+# NPM: https://api.npmjs.org/downloads/range/last-month/package-name
+# PyPI: https://pypistats.org/api/packages/package-name/recent
 ```
 
 ---
@@ -362,45 +422,42 @@ cumulative_data = {
             </div>
         </div>
         
-        <!-- Section 1: Timeline Charts -->
+        <!-- Section 1: Total Monthly Commits Over Time -->
         <div class="section">
-            <h2>📈 Contribution Timeline</h2>
-            <p>Monthly contribution patterns and cumulative impact of top 10 contributors</p>
+            <h2>📊 Total Monthly Commits Over Time</h2>
+            <p>Monthly commit activity for top 10 contributors plus "All Others" aggregated</p>
             
             <div class="chart-container">
-                <canvas id="monthlyChart"></canvas>
+                <canvas id="monthlyCommitsChart"></canvas>
             </div>
+        </div>
+        
+        <!-- Section 2: Cumulative Contributions Over Time -->
+        <div class="section">
+            <h2>📈 Cumulative Contributions Over Time</h2>
+            <p>Cumulative contribution growth for top 10 contributors plus "All Others"</p>
             
             <div class="chart-container">
                 <canvas id="cumulativeChart"></canvas>
             </div>
         </div>
         
-        <!-- Section 2: Top Contributors Visualizations -->
+        <!-- Section 3: Lines of Code Changed by Time Period -->
         <div class="section">
-            <h2>🏆 Top Contributors</h2>
-            <p>Leading contributors by commits, lines changed, and distribution</p>
+            <h2>📉 Lines of Code Changed by Time Period</h2>
+            <p>LOC changes every 6 months (historical) and monthly for last 6 months - Stacked by contributor</p>
             
-            <div class="chart-grid">
-                <div class="chart-container">
-                    <canvas id="commitChart"></canvas>
-                </div>
-                <div class="chart-container">
-                    <canvas id="linesChart"></canvas>
-                </div>
-            </div>
-            
-            <div class="chart-container" style="max-width: 600px; margin: 30px auto;">
-                <canvas id="donutChart"></canvas>
+            <div class="chart-container">
+                <canvas id="locStackedChart"></canvas>
             </div>
         </div>
         
-        <!-- Section 3: Top 20 Contributors Table -->
+        <!-- Section 4: Top 10 Contributors (Last 12 Months) -->
         <div class="section">
-            <h2>📊 Top 20 Contributors (Detailed)</h2>
-            <p>Comprehensive metrics with identity deduplication</p>
+            <h2>🏆 Top 10 Contributors (Last 12 Months)</h2>
+            <p>Recent contributors with lines added/removed and their top 5 most-committed files</p>
             
-            <table id="top20Table">
+            <table id="top10RecentTable">
                 <thead>
                     <tr>
                         <th>Rank</th>
@@ -408,8 +465,7 @@ cumulative_data = {
                         <th>Commits</th>
                         <th>Lines Added</th>
                         <th>Lines Removed</th>
-                        <th>Files Changed</th>
-                        <th>Contribution %</th>
+                        <th>Top 5 Files</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -418,19 +474,22 @@ cumulative_data = {
             </table>
         </div>
         
-        <!-- Section 4: All Contributors Summary -->
+        <!-- Section 5: Package Install Metrics -->
         <div class="section">
-            <h2>👥 All Contributors Summary</h2>
-            <p>Complete contributor roster with activity timeline</p>
+            <h2>📦 Package Install Metrics</h2>
+            <p>Total installs of packages/init over time (6-month intervals) from NPM/PyPI</p>
             
-            <table id="allContributorsTable">
+            <div class="chart-container">
+                <canvas id="packageInstallsChart"></canvas>
+            </div>
+            
+            <table id="packageInstallsTable">
                 <thead>
                     <tr>
-                        <th>Contributor</th>
-                        <th>Total Commits</th>
-                        <th>First Commit</th>
-                        <th>Last Commit</th>
-                        <th>Active Days</th>
+                        <th>Release Version</th>
+                        <th>Published Date</th>
+                        <th>Total Installs</th>
+                        <th>6-Month Period</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -454,12 +513,11 @@ cumulative_data = {
                 totalLines: 0,
                 filesModified: 0
             },
-            monthly: [],
-            cumulative: [],
-            topByCommits: [],
-            topByLines: [],
-            top20: [],
-            allContributors: []
+            monthlyCommits: { labels: [], datasets: [] },  // Top 10 + All Others
+            cumulative: { labels: [], datasets: [] },       // Top 10 + All Others
+            locByPeriod: { labels: [], datasets: [] },      // Stacked bar: 6mo intervals + monthly last 6mo
+            top10Recent: [],                                 // Last 12 months with top 5 files
+            packageInstalls: { labels: [], data: [], table: [] }  // NPM/PyPI install metrics
         };
         
         // Populate summary statistics
@@ -480,12 +538,12 @@ cumulative_data = {
             '#a8edea', '#fed6e3', '#c471f5', '#fa71cd'
         ];
         
-        // Monthly Contribution Timeline Chart
-        new Chart(document.getElementById('monthlyChart'), {
+        // Section 1: Monthly Commits Chart (Top 10 + All Others)
+        new Chart(document.getElementById('monthlyCommitsChart'), {
             type: 'line',
             data: {
-                labels: reportData.monthly.labels || [],
-                datasets: reportData.monthly.datasets || []
+                labels: reportData.monthlyCommits.labels || [],
+                datasets: reportData.monthlyCommits.datasets || []
             },
             options: {
                 responsive: true,
@@ -493,7 +551,7 @@ cumulative_data = {
                 plugins: {
                     title: {
                         display: true,
-                        text: 'Monthly Contributions (Top 10 Contributors)',
+                        text: 'Total Monthly Commits Over Time (Top 10 + All Others)',
                         font: { size: 16, weight: 'bold' }
                     },
                     legend: {
@@ -504,7 +562,7 @@ cumulative_data = {
                 scales: {
                     y: {
                         beginAtZero: true,
-                        title: { display: true, text: 'Lines Changed' }
+                        title: { display: true, text: 'Number of Commits' }
                     },
                     x: {
                         title: { display: true, text: 'Month' }
@@ -517,7 +575,7 @@ cumulative_data = {
             }
         });
         
-        // Cumulative Contribution Chart
+        // Section 2: Cumulative Contributions Chart (Top 10 + All Others)
         new Chart(document.getElementById('cumulativeChart'), {
             type: 'line',
             data: {
@@ -530,7 +588,7 @@ cumulative_data = {
                 plugins: {
                     title: {
                         display: true,
-                        text: 'Cumulative Contributions Over Time (Top 10)',
+                        text: 'Cumulative Contributions Over Time (Top 10 + All Others)',
                         font: { size: 16, weight: 'bold' }
                     },
                     legend: {
@@ -550,83 +608,12 @@ cumulative_data = {
             }
         });
         
-        // Top 15 Contributors by Commits
-        new Chart(document.getElementById('commitChart'), {
+        // Section 3: LOC Changed by Time Period (Stacked Bar Chart)
+        new Chart(document.getElementById('locStackedChart'), {
             type: 'bar',
             data: {
-                labels: reportData.topByCommits.labels || [],
-                datasets: [{
-                    label: 'Commits',
-                    data: reportData.topByCommits.data || [],
-                    backgroundColor: colors[0],
-                    borderRadius: 6
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                indexAxis: 'y',
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Top 15 Contributors by Commits',
-                        font: { size: 14, weight: 'bold' }
-                    },
-                    legend: { display: false }
-                },
-                scales: {
-                    x: {
-                        beginAtZero: true,
-                        title: { display: true, text: 'Number of Commits' }
-                    }
-                }
-            }
-        });
-        
-        // Top 15 Contributors by Lines Changed
-        new Chart(document.getElementById('linesChart'), {
-            type: 'bar',
-            data: {
-                labels: reportData.topByLines.labels || [],
-                datasets: [{
-                    label: 'Lines Changed',
-                    data: reportData.topByLines.data || [],
-                    backgroundColor: colors[1],
-                    borderRadius: 6
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                indexAxis: 'y',
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Top 15 Contributors by Lines Changed',
-                        font: { size: 14, weight: 'bold' }
-                    },
-                    legend: { display: false }
-                },
-                scales: {
-                    x: {
-                        beginAtZero: true,
-                        title: { display: true, text: 'Total Lines Changed' }
-                    }
-                }
-            }
-        });
-        
-        // Contribution Distribution Donut Chart
-        new Chart(document.getElementById('donutChart'), {
-            type: 'doughnut',
-            data: {
-                labels: reportData.topByLines.labels?.slice(0, 10) || [],
-                datasets: [{
-                    data: reportData.topByLines.data?.slice(0, 10) || [],
-                    backgroundColor: colors,
-                    borderWidth: 2,
-                    borderColor: '#fff'
-                }]
+                labels: reportData.locByPeriod.labels || [],
+                datasets: reportData.locByPeriod.datasets || []
             },
             options: {
                 responsive: true,
@@ -634,20 +621,71 @@ cumulative_data = {
                 plugins: {
                     title: {
                         display: true,
-                        text: 'Contribution Distribution (Top 10)',
-                        font: { size: 14, weight: 'bold' }
+                        text: 'Lines of Code Changed by Time Period (6-month intervals + monthly last 6mo)',
+                        font: { size: 16, weight: 'bold' }
                     },
                     legend: {
-                        position: 'right',
+                        position: 'bottom',
                         labels: { padding: 15, usePointStyle: true }
+                    }
+                },
+                scales: {
+                    x: {
+                        stacked: true,
+                        title: { display: true, text: 'Time Period' }
+                    },
+                    y: {
+                        stacked: true,
+                        beginAtZero: true,
+                        title: { display: true, text: 'Lines Changed' }
                     }
                 }
             }
         });
         
-        // Populate Top 20 Contributors Table
-        const top20Body = document.querySelector('#top20Table tbody');
-        reportData.top20.forEach((contributor, index) => {
+        // Section 5: Package Install Metrics Chart
+        new Chart(document.getElementById('packageInstallsChart'), {
+            type: 'line',
+            data: {
+                labels: reportData.packageInstalls.labels || [],
+                datasets: [{
+                    label: 'Total Installs',
+                    data: reportData.packageInstalls.data || [],
+                    borderColor: colors[0],
+                    backgroundColor: colors[0] + '33',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Package Install Growth Over Time (6-month intervals)',
+                        font: { size: 16, weight: 'bold' }
+                    },
+                    legend: {
+                        display: true,
+                        position: 'bottom'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Total Installs' }
+                    },
+                    x: {
+                        title: { display: true, text: 'Release Period' }
+                    }
+                }
+            }
+        });
+        
+        // Section 4: Populate Top 10 Recent Contributors Table (Last 12 Months)
+        const top10RecentBody = document.querySelector('#top10RecentTable tbody');
+        reportData.top10Recent.forEach((contributor, index) => {
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td><span class="rank">${index + 1}</span></td>
@@ -655,29 +693,26 @@ cumulative_data = {
                 <td>${contributor.commits.toLocaleString()}</td>
                 <td>${contributor.linesAdded.toLocaleString()}</td>
                 <td>${contributor.linesRemoved.toLocaleString()}</td>
-                <td>${contributor.filesChanged.toLocaleString()}</td>
                 <td>
-                    ${contributor.percentage.toFixed(2)}%
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: ${contributor.percentage}%"></div>
-                    </div>
+                    <ul style="margin: 0; padding-left: 20px; font-size: 0.9em;">
+                        ${contributor.topFiles.map(f => `<li>${f}</li>`).join('')}
+                    </ul>
                 </td>
             `;
-            top20Body.appendChild(row);
+            top10RecentBody.appendChild(row);
         });
         
-        // Populate All Contributors Table
-        const allContributorsBody = document.querySelector('#allContributorsTable tbody');
-        reportData.allContributors.forEach(contributor => {
+        // Section 5: Populate Package Installs Table
+        const packageInstallsBody = document.querySelector('#packageInstallsTable tbody');
+        reportData.packageInstalls.table.forEach(release => {
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td><strong>${contributor.name}</strong></td>
-                <td>${contributor.commits.toLocaleString()}</td>
-                <td>${contributor.firstCommit}</td>
-                <td>${contributor.lastCommit}</td>
-                <td>${contributor.activeDays} days</td>
+                <td><strong>${release.version}</strong></td>
+                <td>${release.publishedDate}</td>
+                <td>${release.totalInstalls.toLocaleString()}</td>
+                <td>${release.period}</td>
             `;
-            allContributorsBody.appendChild(row);
+            packageInstallsBody.appendChild(row);
         });
     </script>
 </body>
