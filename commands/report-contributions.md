@@ -1,13 +1,13 @@
 # Report Contributions Command
 
-**Description**: Analyze the uds-core codebase to generate a comprehensive, beautiful HTML report of contributor statistics, commit history, and code changes with interactive visualizations
+**Description**: Analyze a Git repository's codebase to generate a comprehensive, beautiful HTML report of contributor statistics, commit history, and code changes with interactive visualizations
 
 ---
 
 # Contribution Analysis & Reporting Protocol (V2)
 
 **Version**: 2.0
-**Purpose**: Generate detailed contributor analytics and beautiful HTML reports for the uds-core repository with enhanced time-series analysis and package install metrics
+**Purpose**: Generate detailed contributor analytics and beautiful HTML reports for any Git repository with enhanced time-series analysis and package install metrics
 **Output**: `contribution-report-v2.html` with interactive charts and comprehensive statistics
 **Duration**: 20-40 minutes
 
@@ -51,7 +51,7 @@ git log --oneline | wc -l
 ```
 
 **Important**: 
-- If the uds-core repository is not cloned locally, clone it first
+- If the target repository is not cloned locally, clone it first
 - Ensure you have access to the complete git history (not a shallow clone)
 - Check default branch name (main, master, etc.)
 
@@ -228,7 +228,7 @@ package_installs = {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UDS-Core Contribution Report</title>
+    <title>Git Repository Contribution Report</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
         /* Modern, clean styling */
@@ -400,7 +400,7 @@ package_installs = {
     <div class="container">
         <!-- Header with Summary Stats -->
         <div class="header">
-            <h1>🚀 UDS-Core Contribution Report</h1>
+            <h1>🚀 Git Repository Contribution Report</h1>
             <p>Comprehensive analysis of contributor activity and impact</p>
             <div class="stats-summary">
                 <div class="stat-box">
@@ -725,7 +725,7 @@ package_installs = {
 ```python
 #!/usr/bin/env python3
 """
-Generate HTML contribution report for uds-core repository
+Generate HTML contribution report for Git repository
 """
 
 import subprocess
@@ -762,7 +762,7 @@ def generate_html_report(data, output_file='contribution-report.html'):
     pass
 
 if __name__ == '__main__':
-    print("Analyzing uds-core repository...")
+    print("Analyzing Git repository...")
     stats = get_contributor_stats()
     deduplicated = deduplicate_contributors(stats)
     monthly = generate_monthly_data(deduplicated)
@@ -814,7 +814,7 @@ python3 --version
 ```python
 #!/usr/bin/env python3
 """
-UDS-Core Contribution Report Generator
+Git Repository Contribution Report Generator
 
 This script analyzes git history and generates a beautiful HTML report
 with interactive charts showing contributor statistics and trends.
@@ -1093,7 +1093,7 @@ def generate_html_report(data, output_path='contribution-report.html'):
     print(f"✅ Report generated: {output_path}")
 
 if __name__ == '__main__':
-    print("🚀 UDS-Core Contribution Report Generator")
+    print("🚀 Git Repository Contribution Report Generator")
     print("=" * 50)
     
     # Analyze repository
@@ -1111,14 +1111,14 @@ if __name__ == '__main__':
 
 ## Usage Examples
 
-### Example 1: Generate Report for UDS-Core
+### Example 1: Generate Report for a Repository
 
 ```bash
 # Command
 /report-contributions
 
 # Claude's Response
-I'll analyze the uds-core repository and generate a contribution report...
+I'll analyze the repository and generate a contribution report...
 
 Step 1: Checking repository status...
 ✅ Repository is up to date
@@ -1184,7 +1184,7 @@ Top 3 Contributors:
 ### Common Issues
 
 **Issue**: "Not a git repository"
-- **Solution**: Ensure you're in the repository directory or clone uds-core first
+- **Solution**: Ensure you're in the repository directory or clone the target repository first
 
 **Issue**: Empty charts or missing data
 - **Solution**: Check git log output, verify commits exist in specified branch
