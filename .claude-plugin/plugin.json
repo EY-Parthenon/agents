@@ -26,7 +26,8 @@
     "./commands/plan.md",
     "./commands/modernize.md",
     "./commands/retro.md",
-    "./commands/retro-apply.md"
+    "./commands/retro-apply.md",
+    "./commands/report-contributions.md"
   ],
   "agents": [
     "./agents/architect.md",
